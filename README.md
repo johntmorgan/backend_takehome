@@ -14,7 +14,7 @@ In this challenge, you will be tasked with creating a simple ETL pipeline that c
 2. The application should expose an API endpoint that triggers an ETL process.
 
 3. The ETL process should:
-- Load CSV files from the given data directory.
+ - Load CSV files from the given data directory.
  - Process these files to derive some simple features.
  - Upload the processed data into a **postgres** table.
 
