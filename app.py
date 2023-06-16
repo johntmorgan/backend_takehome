@@ -124,6 +124,7 @@ def setup_db():
     db = create_engine(db_string, echo=True)
     return db
 
+# Writing raw SQL, as have not worked in depth with Python ORMs before
 def create_tables(db):
     with db.connect() as conn:
         conn.execute(text("DROP TABLE IF EXISTS users;"))
@@ -188,10 +189,12 @@ def load_to_database(users, exps, compounds, db):
             conn.commit()
 
 # Only querying users table, as it contains all the derived features
+# Output all users table data for inspection, not sure if should limit to
+# derived feature columns
 @app.route('/query_db')
 def query_db():
     db = setup_db()
     with db.connect() as conn:
         results = conn.execute(text('SELECT * FROM users'))
         results = [tuple(row) for row in results]
-    return {"Data from users table with derived features": results}, 200
+    return {"Data from Postgres users table with all derived features": results}, 200
