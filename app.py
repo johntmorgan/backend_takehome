@@ -20,7 +20,7 @@ def etl():
     calc_avg_user_exp_time(users, exps)
     calc_common_user_compound(users, exps, compounds)
 
-    # Load files into postgres database
+    # Load files into postgres
     db = setup_db()
     create_tables(db)
     load_to_database(users, exps, compounds, db)
@@ -121,8 +121,7 @@ def setup_db():
 
     db_string = 'postgresql://{}:{}@{}:{}/{}'.format(db_user, db_pass, db_host,
         db_port, db_name)
-    print(db_string, flush=True)
-    db = create_engine(db_string, echo = True)
+    db = create_engine(db_string, echo=True)
     return db
 
 def create_tables(db):
@@ -187,3 +186,12 @@ def load_to_database(users, exps, compounds, db):
                  '\'' + str(comp_row[1]) + '\'' + ',' +
                  '\'' + str(comp_row[2]) + '\'' + ');'))
             conn.commit()
+
+# Only querying users table, as it contains all the derived features
+@app.route('/query_db')
+def query_db():
+    db = setup_db()
+    with db.connect() as conn:
+        results = conn.execute(text('SELECT * FROM users'))
+        results = [tuple(row) for row in results]
+    return {"Data from users table with derived features": results}, 200
