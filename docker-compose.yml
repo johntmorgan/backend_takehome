@@ -23,8 +23,6 @@ services:
     networks:
       - app-network
     restart: always
-    volumes:
-      - ./db:/var/lib/postgresql/data
 
 networks:
   app-network:
